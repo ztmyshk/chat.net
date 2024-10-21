@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            min-height: 800px;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .content {
+            background-color: rgba(255, 255, 255, 0.2);
+            background: black;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 90px;
+            position: relative;
+        }
+        .content::after, .content::before{
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-image: conic-gradient(from var(--angle), #ff4545, #00ff99, #006aff, #ff0095, #ff4545);
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+            z-index: -1;
+            padding: 3px;
+            border-radius: 10px;
+            animation: 3s spin linear infinite;
+        }
+        .content::before{
+            filter: blur(1.5rem);
+            opacity: 0.5;
+        }
+        @keyframes spin{
+            from{
+                --angle: 0deg;
+            }
+            to{
+                --angle: 360deg;
+            }
+        }
+        h1,h2,h3,p {
+            text-align: center;
+            color: white;
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+        input {
+            background-color: rgba(0, 0, 0, 0);
+            width: 100%;
+            max-width: 300px;
+            height: 10px;
+            border: none;
+            outline: none;
+            border: 2px solid rgba(255, 255, 255, 1);
+            border-radius: 40px;
+            font-size: 16px;
+            color: white;
+            padding: 15px 28px;
+            margin-top: 20px;
+        }
+        input[type="password"] {
+            -webkit-text-security: disc;
+        }
+    </style>
+    <title>ロックされています。</title>
+</head>
+<body>
+    <div class="content">
+        <h1>Welcome!</h1>
+        <p>このサイトを使うにはパスワードを入力する必要があります。</p>
+        <input type="password" id="passwordInput" placeholder="password" />
+    </div>
+    <script>
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        async function checkPassword() {
+            const inputPassword = document.getElementById('passwordInput').value;
+            const hashedPassword = await sha256(inputPassword);
+
+            const correctHash = "3a058910d61509719bbde5a74f6f84aeb6981ba421b1448dd032990719e6e0d3";
+
+            if (hashedPassword === correctHash) {
+                window.location.href = "https;//google.com";
+            } else {
+                alert("間違えています。");
+            }
+        }
+
+        document.getElementById('passwordInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
+    <style>
+    @property --angle{
+        syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+    }
+    </style>
+</body>
+</html>
